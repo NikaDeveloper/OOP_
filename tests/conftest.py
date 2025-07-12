@@ -68,3 +68,10 @@ def empty_category(empty_products):
         description="Телевизоры с OLED и QLED",
         products=empty_products,
     )
+
+
+@pytest.fixture(autouse=True)
+def reset_category_counters():
+    Category.number_of_categories = 0
+    Category.number_of_products = 0
+    yield
