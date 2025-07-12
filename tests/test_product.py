@@ -1,8 +1,4 @@
-import pytest
-
-
 def test_product_attributes(sample_product1):
-    """Проверка корректности инициализации атрибутов продукта"""
     assert sample_product1.name == "Samsung Galaxy S23 Ultra"
     assert sample_product1.description == "256GB, Серый цвет, 200MP камера"
     assert sample_product1.price == 180000.0
@@ -10,7 +6,6 @@ def test_product_attributes(sample_product1):
 
 
 def test_empty_product(empty_product):
-    """Проверка обработки пустых значений"""
     assert empty_product.name == ""
     assert empty_product.description == ""
     assert empty_product.price == 0.0
@@ -18,10 +13,8 @@ def test_empty_product(empty_product):
 
 
 def test_product_price_type(sample_product2):
-    """Проверка типа цены (должен быть float)"""
     assert isinstance(sample_product2.price, float)
 
 
 def test_product_quantity_type(sample_product3):
-    """Проверка типа количества (должен быть int)"""
     assert isinstance(sample_product3.quantity, int)
