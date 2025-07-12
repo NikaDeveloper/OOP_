@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from src.category import Category
@@ -75,3 +77,25 @@ def reset_category_counters():
     Category.number_of_categories = 0
     Category.number_of_products = 0
     yield
+
+
+@pytest.fixture
+def temp_json_file(tmp_path):
+    data = [
+        {
+            "name": "Тестовая категория",
+            "description": "Описание тестовой категории",
+            "products": [
+                {
+                    "name": "Тестовый товар",
+                    "description": "Описание тестового товара",
+                    "price": 1000.0,
+                    "quantity": 10
+                }
+            ]
+        }
+    ]
+    file_path = tmp_path / "test_products.json"
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f)
+    return file_path

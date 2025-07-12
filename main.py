@@ -1,7 +1,22 @@
 from src.category import Category
 from src.product import Product
+from src.utils import load_data_from_json
+
+
+def main():
+    categories = load_data_from_json('src/products.json')
+
+    for category in categories:
+        print(f"\nКатегория: {category.name}")
+        print(f"Описание: {category.description}")
+        print(f"Количество товаров: {len(category.products)}")
+        print("Товары:")
+        for product in category.products:
+            print(f"- {product.name}: {product.price} руб. (Остаток: {product.quantity})")
+
 
 if __name__ == "__main__":
+    main()
     product1 = Product(
         "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5
     )
