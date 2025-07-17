@@ -90,12 +90,12 @@ def temp_json_file(tmp_path):
                     "name": "Тестовый товар",
                     "description": "Описание тестового товара",
                     "price": 1000.0,
-                    "quantity": 10
+                    "quantity": 10,
                 }
-            ]
+            ],
         }
     ]
     file_path = tmp_path / "test_products.json"
-    with open(file_path, 'w', encoding='utf-8') as f:
+    with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
     return file_path
