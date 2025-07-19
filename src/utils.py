@@ -34,7 +34,7 @@ def load_data_from_json(filename):
 
         if not isinstance(category_data["products"], list):
             print("Ошибка: products должен быть списком")
-            continue  # Это строка могла быть непокрытой
+            continue
 
         products = []
         for product_data in category_data["products"]:

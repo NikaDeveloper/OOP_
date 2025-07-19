@@ -204,7 +204,7 @@ def test_invalid_products_type(tmp_path, capsys):
     categories = load_data_from_json(file_path)
     captured = capsys.readouterr()
 
-    assert len(categories) == 0  # Категория не должна создаваться
+    assert len(categories) == 0
     assert "products должен быть списком" in captured.out
 
 
@@ -215,7 +215,6 @@ def test_category_creation_error(tmp_path, capsys, monkeypatch):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
 
-    # Имитируем ошибку при создании категории
     def mock_init(self, name, description, products):
         raise ValueError("Искусственная ошибка создания категории")
 
@@ -274,7 +273,6 @@ def test_product_creation_error(tmp_path, capsys, monkeypatch):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
 
-    # Имитируем ошибку при создании продукта
     original_product_init = Product.__init__
 
     def mock_product_init(self, name, description, price, quantity):
@@ -293,7 +291,6 @@ def test_product_creation_error(tmp_path, capsys, monkeypatch):
             in captured.out
         )
     finally:
-        # Восстанавливаем оригинальный __init__
         monkeypatch.setattr(Product, "__init__", original_product_init)
 
 
@@ -339,10 +336,8 @@ def test_category_creation_exception(tmp_path, capsys, monkeypatch):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
 
-    # Сохраняем оригинальный метод
     original_init = Category.__init__
 
-    # Мокаем __init__ чтобы вызвать исключение
     def mock_init(self, name, description, products):
         raise RuntimeError("Искусственная ошибка создания категории")
 
@@ -358,7 +353,6 @@ def test_category_creation_exception(tmp_path, capsys, monkeypatch):
             in captured.out
         )
     finally:
-        # Восстанавливаем оригинальный метод
         monkeypatch.setattr(Category, "__init__", original_init)
 
 
@@ -425,10 +419,8 @@ def test_category_creation_with_invalid_data(tmp_path, capsys, monkeypatch):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
 
-    # Сохраняем оригинальный метод
     original_init = Category.__init__
 
-    # Мокаем __init__ чтобы вызвать исключение
     def mock_init(self, name, description, products):
         if "Invalid" in name:
             raise ValueError("Invalid category name")
@@ -437,11 +429,9 @@ def test_category_creation_with_invalid_data(tmp_path, capsys, monkeypatch):
     monkeypatch.setattr(Category, "__init__", mock_init)
 
     try:
-        # Сначала тестируем валидный случай
         categories = load_data_from_json(file_path)
         assert len(categories) == 1
 
-        # Теперь тестируем невалидный случай
         invalid_data = [
             {"name": "Invalid Category", "description": "Desc", "products": []}
         ]
@@ -455,7 +445,6 @@ def test_category_creation_with_invalid_data(tmp_path, capsys, monkeypatch):
         assert len(categories) == 0
         assert "Ошибка при создании категории" in captured.out
     finally:
-        # Восстанавливаем оригинальный метод
         monkeypatch.setattr(Category, "__init__", original_init)
 
 
@@ -515,7 +504,6 @@ def test_category_creation_failure(tmp_path, capsys, monkeypatch):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
 
-    # Мокаем Category.__init__ чтобы вызвать исключение
     original_init = Category.__init__
 
     def mock_init(self, name, description, products):
@@ -533,21 +521,19 @@ def test_category_creation_failure(tmp_path, capsys, monkeypatch):
             in captured.out
         )
     finally:
-        # Восстанавливаем оригинальный __init__
         monkeypatch.setattr(Category, "__init__", original_init)
 
 
 def test_full_error_handling(tmp_path, capsys, monkeypatch):
     """Комплексный тест обработки ошибок"""
-    # Подготовка данных с разными типами ошибок
     file_path = tmp_path / "full_test.json"
     data = [
-        {  # Невалидный тип products
+        {
             "name": "Category 1",
             "description": "Desc",
             "products": "not_a_list",
         },
-        {  # Валидная категория
+        {
             "name": "Category 2",
             "description": "Desc",
             "products": [
@@ -559,7 +545,7 @@ def test_full_error_handling(tmp_path, capsys, monkeypatch):
                 }
             ],
         },
-        {  # Категория, которая вызовет исключение при создании
+        {
             "name": "Category 3",
             "description": "Desc",
             "products": [],
@@ -569,7 +555,6 @@ def test_full_error_handling(tmp_path, capsys, monkeypatch):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
 
-    # Мокаем Category.__init__ для третьей категории
     original_init = Category.__init__
 
     call_count = 0
@@ -587,14 +572,12 @@ def test_full_error_handling(tmp_path, capsys, monkeypatch):
         categories = load_data_from_json(file_path)
         captured = capsys.readouterr()
 
-        # Должна быть создана только одна валидная категория
         assert len(categories) == 1
         assert categories[0].name == "Category 2"
 
-        # Проверяем сообщения об ошибках
         output = captured.out
         assert "products должен быть списком" in output
         assert "Специальная ошибка для теста" in output
-        assert call_count == 2  # Должны быть попытки создать 2 категории (1 успешная)
+        assert call_count == 2
     finally:
         monkeypatch.setattr(Category, "__init__", original_init)
