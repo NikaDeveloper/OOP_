@@ -1,3 +1,7 @@
+from unittest.mock import patch
+
+import pytest
+
 from src.product import Product
 
 
@@ -61,3 +65,44 @@ def test_price_setter_validation():
 
     product.price = 200.0
     assert product.price == 200.0
+
+
+def test_product_str_representation(sample_product1):
+    expected_str = "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт."
+    assert str(sample_product1) == expected_str
+
+
+def test_product_addition(sample_product1, sample_product2):
+    total = sample_product1 + sample_product2
+    expected_total = (180000.0 * 5) + (210000.0 * 8)
+    assert total == expected_total
+
+
+def test_product_addition_with_invalid_type(sample_product1):
+    with pytest.raises(TypeError):
+        sample_product1 + "Invalid_object"
+
+
+def test_price_setter_decrease_with_confirmation(sample_product1):
+    with patch("builtins.input", return_value="y"):
+        sample_product1.price = 170000.0
+        assert sample_product1.price == 170000.0
+
+
+def test_price_setter_decrease_rejected(sample_product1):
+    with patch("builtins.input", return_value="n"):
+        sample_product1.price = 170000.0
+        assert sample_product1.price == 180000.0
+
+
+def test_new_product_with_empty_list():
+    product_data = {
+        "name": "New Product",
+        "description": "New Description",
+        "price": 200.0,
+        "quantity": 10,
+    }
+    product = Product.new_product(product_data, [])
+    assert product.name == "New Product"
+    assert product.price == 200.0
+    assert product.quantity == 10
