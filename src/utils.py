@@ -8,12 +8,13 @@ def load_data_from_json(filename):
     """Загружает данные о категориях и товарах из JSON-файла"""
     try:
         with open(filename, "r", encoding="utf-8") as file:
-            data = json.load(file)
+            try:
+                data = json.load(file)
+            except json.JSONDecodeError as e:
+                print(f"Ошибка: файл {filename} содержит невалидный JSON: {e}")
+                return []
     except FileNotFoundError:
         print(f"Ошибка: файл {filename} не найден")
-        return []
-    except json.JSONDecodeError:
-        print(f"Ошибка: файл {filename} содержит невалидный JSON")
         return []
 
     if not isinstance(data, list):
@@ -22,36 +23,53 @@ def load_data_from_json(filename):
 
     categories = []
     for category_data in data:
-        if not all(key in category_data for key in ["name", "description", "products"]):
+        if not isinstance(category_data, dict):
+            print("Ошибка: данные категории должны быть словарем")
+            continue
+
+        required_category_fields = ["name", "description", "products"]
+        if not all(field in category_data for field in required_category_fields):
             print("Ошибка: неверная структура данных категории")
             continue
 
+        if not isinstance(category_data["products"], list):
+            print("Ошибка: products должен быть списком")
+            continue  # Это строка могла быть непокрытой
+
         products = []
         for product_data in category_data["products"]:
-            if not all(
-                key in product_data
-                for key in ["name", "description", "price", "quantity"]
-            ):
-                print("Ошибка: неверная структура данных товара")
+            if not isinstance(product_data, dict):
+                print("Ошибка: данные товара должны быть словарем")
+                continue
+
+            required_product_fields = ["name", "description", "price", "quantity"]
+            if not all(field in product_data for field in required_product_fields):
+                print(
+                    "Ошибка: неверная структура данных товара - отсутствуют обязательные поля"
+                )
                 continue
 
             try:
                 product = Product(
-                    name=product_data["name"],
-                    description=product_data["description"],
+                    name=str(product_data["name"]),
+                    description=str(product_data["description"]),
                     price=float(product_data["price"]),
                     quantity=int(product_data["quantity"]),
                 )
                 products.append(product)
-            except (ValueError, TypeError):
-                print("Ошибка: неверные данные товара")
+            except (ValueError, TypeError) as e:
+                print(f"Ошибка преобразования данных товара: {e}")
                 continue
 
-        category = Category(
-            name=category_data["name"],
-            description=category_data["description"],
-            products=products,
-        )
-        categories.append(category)
+        try:
+            category = Category(
+                name=str(category_data["name"]),
+                description=str(category_data["description"]),
+                products=products,
+            )
+            categories.append(category)
+        except Exception as e:
+            print(f"Ошибка при создании категории: {e}")
+            continue
 
     return categories
