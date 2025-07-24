@@ -38,3 +38,8 @@ class Category:
     @property
     def products_list(self):
         return self.__products
+
+    def print_products(self):
+        """Выводит список продуктов с нумерацией"""
+        for i, product in enumerate(self.__products, 1):
+            print(f"{i}. {product}")

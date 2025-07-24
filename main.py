@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     print(category_smartphones.products)
 
-    print(Category.product_count)
+    print(f"Общее количество продуктов: {Category.number_of_products}")
 
     try:
         category_smartphones.add_product("Not a product")

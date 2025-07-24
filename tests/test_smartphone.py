@@ -45,3 +45,4 @@ def test_add_smartphones():
     )
     total = smartphone1 + smartphone2
     assert total == (210000 * 2) + (180000 * 3)
+
