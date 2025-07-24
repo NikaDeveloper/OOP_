@@ -3,7 +3,9 @@ import json
 import pytest
 
 from src.category import Category
+from src.lawngrass import LawnGrass
 from src.product import Product
+from src.smartphone import Smartphone
 
 
 @pytest.fixture
@@ -99,3 +101,19 @@ def temp_json_file(tmp_path):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
     return file_path
+
+
+
+@pytest.fixture
+def sample_smartphone():
+    return Smartphone(
+        name="Test Phone", description="Test", price=1000, quantity=1,
+        efficiency=90.0, model="X", memory=128, color="Black"
+    )
+
+@pytest.fixture
+def sample_lawngrass():
+    return LawnGrass(
+        name="Test Grass", description="Test", price=100, quantity=1,
+        country="Russia", germination_period="7 days", color="Green"
+    )

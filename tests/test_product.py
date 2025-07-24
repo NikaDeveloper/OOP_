@@ -2,7 +2,9 @@ from unittest.mock import patch
 
 import pytest
 
+from src.lawngrass import LawnGrass
 from src.product import Product
+from src.smartphone import Smartphone
 
 
 def test_product_attributes(sample_product1):
@@ -106,3 +108,32 @@ def test_new_product_with_empty_list():
     assert product.name == "New Product"
     assert product.price == 200.0
     assert product.quantity == 10
+
+
+def test_add_smartphones(sample_smartphone):
+    """Тест сложения смартфонов"""
+    smartphone2 = Smartphone(
+        name="Phone 2", description="", price=800, quantity=2,
+        efficiency=85.0, model="Y", memory=256, color="White"
+    )
+    total = sample_smartphone + smartphone2
+    assert total == (1000 * 1) + (800 * 2)
+
+
+def test_add_lawngrass(sample_lawngrass):
+    """Тест сложения газонной травы"""
+    grass2 = LawnGrass(
+        name="Grass 2", description="", price=80, quantity=3,
+        country="USA", germination_period="5 days", color="Dark Green"
+    )
+    total = sample_lawngrass + grass2
+    assert total == (100 * 1) + (80 * 3)
+
+
+def test_add_different_classes_raises_error(sample_smartphone, sample_lawngrass):
+    """Тест попытки сложения разных классов"""
+    with pytest.raises(TypeError, match="Можно складывать только объекты одного класса"):
+        sample_smartphone + sample_lawngrass
+
+    with pytest.raises(TypeError):
+        sample_smartphone + Product("Test", "", 100, 1)
