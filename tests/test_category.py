@@ -72,8 +72,14 @@ def test_product_count_property(sample_category):
 def test_add_smartphone_to_category(sample_category):
     """Тест добавления смартфона в категорию"""
     smartphone = Smartphone(
-        name="New Phone", description="", price=1000, quantity=1,
-        efficiency=0, model="", memory=0, color=""
+        name="New Phone",
+        description="",
+        price=1000,
+        quantity=1,
+        efficiency=0,
+        model="",
+        memory=0,
+        color="",
     )
     initial_count = sample_category.product_count
     sample_category.add_product(smartphone)
@@ -84,8 +90,13 @@ def test_add_smartphone_to_category(sample_category):
 def test_add_lawngrass_to_category(sample_category):
     """Тест добавления газонной травы в категорию"""
     grass = LawnGrass(
-        name="New Grass", description="", price=100, quantity=1,
-        country="", germination_period="", color=""
+        name="New Grass",
+        description="",
+        price=100,
+        quantity=1,
+        country="",
+        germination_period="",
+        color="",
     )
     initial_count = sample_category.product_count
     sample_category.add_product(grass)
@@ -95,7 +106,9 @@ def test_add_lawngrass_to_category(sample_category):
 
 def test_add_invalid_product_raises_error(sample_category):
     """Тест попытки добавления не-продукта в категорию"""
-    with pytest.raises(TypeError, match="Можно добавлять только объекты Product или его наследников"):
+    with pytest.raises(
+        TypeError, match="Можно добавлять только объекты Product или его наследников"
+    ):
         sample_category.add_product("Not a product")
 
     with pytest.raises(TypeError):
