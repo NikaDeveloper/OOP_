@@ -1,4 +1,5 @@
 class Product:
+
     def __init__(self, name, description, price, quantity):
         self.name = name
         self.description = description
@@ -48,11 +49,9 @@ class Product:
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other):
-        if not isinstance(other, Product):
-            raise TypeError("Можно складывать только объекты Product")
+        if type(self) is not type(other):
+            raise TypeError("Можно складывать только объекты одного класса")
         return (self.price * self.quantity) + (other.price * other.quantity)
 
     def __repr__(self):
-        return (
-            f"Product(name='{self.name}', price={self.price}, quantity={self.quantity})"
-        )
+        return f"{self.__class__.__name__}(name='{self.name}', price={self.price}, quantity={self.quantity})"
