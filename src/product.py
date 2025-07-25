@@ -1,10 +1,15 @@
-class Product:
+from src.base_product import BaseProduct
+from src.log_mixin import LogMixin
+
+
+class Product(BaseProduct, LogMixin):
 
     def __init__(self, name, description, price, quantity):
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
+        super().__init__(name=name, description=description, price=price, quantity=quantity)
 
     @classmethod
     def new_product(cls, product_data, products_list=None):
