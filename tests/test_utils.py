@@ -12,8 +12,8 @@ def test_load_valid_json(temp_json_file):
     assert isinstance(categories[0], Category)
     assert categories[0].name == "Тестовая категория"
     assert categories[0].product_count == 1
-    assert isinstance(categories[0].products_list[0], Product)
-    assert categories[0].products_list[0].name == "Тестовый товар"
+    assert isinstance(categories[0].products[0], Product)
+    assert categories[0].products[0].name == "Тестовый товар"
 
 
 def test_file_not_found():
@@ -93,15 +93,15 @@ def test_skip_product_with_invalid_structure(tmp_path, capsys):
     print(f"Loaded categories: {categories}")
     if categories:
         print(
-            f"Category details: {categories[0].name}, products: {categories[0].products_list}"
+            f"Category details: {categories[0].name}, products: {categories[0].products}"
         )
     captured = capsys.readouterr()
 
     assert len(categories) == 1, f"Expected 1 category, got {len(categories)}"
     if categories:
-        print(f"Category products: {categories[0].products_list}")
-        assert len(categories[0].products_list) == 1
-        assert categories[0].products_list[0].name == "Valid Product"
+        print(f"Category products: {categories[0].products}")
+        assert len(categories[0].products) == 1
+        assert categories[0].products[0].name == "Valid Product"
     assert "неверная структура данных товара" in captured.out
 
 
@@ -138,8 +138,8 @@ def test_skip_product_with_invalid_data_types(tmp_path, capsys):
     captured = capsys.readouterr()
 
     assert len(categories) == 1, "Должна быть загружена 1 категория"
-    assert len(categories[0].products_list) == 1, "Должен быть 1 валидный товар"
-    assert categories[0].products_list[0].name == "Valid Product"
+    assert len(categories[0].products) == 1, "Должен быть 1 валидный товар"
+    assert categories[0].products[0].name == "Valid Product"
     assert "Ошибка преобразования данных товара" in captured.out
 
 
@@ -184,7 +184,7 @@ def test_product_data_conversion_errors(tmp_path, capsys):
     captured = capsys.readouterr()
 
     assert len(categories) == 1
-    assert len(categories[0].products_list) == 0
+    assert len(categories[0].products) == 0
     assert "Ошибка преобразования данных товара" in captured.out
 
 
@@ -285,7 +285,7 @@ def test_product_creation_error(tmp_path, capsys, monkeypatch):
         captured = capsys.readouterr()
 
         assert len(categories) == 1
-        assert len(categories[0].products_list) == 0
+        assert len(categories[0].products) == 0
         assert (
             "Ошибка преобразования данных товара: Искусственная ошибка создания продукта"
             in captured.out
