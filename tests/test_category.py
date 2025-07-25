@@ -1,5 +1,9 @@
+import pytest
+
 from src.category import Category
+from src.lawngrass import LawnGrass
 from src.product import Product
+from src.smartphone import Smartphone
 
 
 def test_category_initialization(sample_category, sample_products):
@@ -41,9 +45,11 @@ def test_category_str_representation(sample_category):
 
 
 def test_add_product_to_category(sample_category, sample_product1):
+    """Тест добавления обычного продукта в категорию"""
     initial_count = sample_category.product_count
     sample_category.add_product(sample_product1)
     assert sample_category.product_count == initial_count + 1
+    assert sample_product1 in sample_category.products_list
 
 
 def test_products_list_property(sample_category):
@@ -61,3 +67,52 @@ def test_product_property(sample_category):
 
 def test_product_count_property(sample_category):
     assert sample_category.product_count == 3
+
+
+def test_add_smartphone_to_category(sample_category):
+    """Тест добавления смартфона в категорию"""
+    smartphone = Smartphone(
+        name="New Phone",
+        description="",
+        price=1000,
+        quantity=1,
+        efficiency=0,
+        model="",
+        memory=0,
+        color="",
+    )
+    initial_count = sample_category.product_count
+    sample_category.add_product(smartphone)
+    assert sample_category.product_count == initial_count + 1
+    assert smartphone in sample_category.products_list
+
+
+def test_add_lawngrass_to_category(sample_category):
+    """Тест добавления газонной травы в категорию"""
+    grass = LawnGrass(
+        name="New Grass",
+        description="",
+        price=100,
+        quantity=1,
+        country="",
+        germination_period="",
+        color="",
+    )
+    initial_count = sample_category.product_count
+    sample_category.add_product(grass)
+    assert sample_category.product_count == initial_count + 1
+    assert grass in sample_category.products_list
+
+
+def test_add_invalid_product_raises_error(sample_category):
+    """Тест попытки добавления не-продукта в категорию"""
+    with pytest.raises(
+        TypeError, match="Можно добавлять только объекты Product или его наследников"
+    ):
+        sample_category.add_product("Not a product")
+
+    with pytest.raises(TypeError):
+        sample_category.add_product(123)
+
+    with pytest.raises(TypeError):
+        sample_category.add_product({"name": "Dict", "price": 100})
