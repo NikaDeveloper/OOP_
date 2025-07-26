@@ -4,8 +4,27 @@ import pytest
 
 from src.category import Category
 from src.lawngrass import LawnGrass
+from src.log_mixin import LogMixin
+from src.order import Order
 from src.product import Product
 from src.smartphone import Smartphone
+
+
+@pytest.fixture(autouse=True)
+def disable_logging():
+    LogMixin.disable_logging()
+    yield
+    LogMixin.enable_logging()
+
+
+@pytest.fixture
+def sample_product():
+    return Product("Test Product", "Test Description", 100.0, 5)
+
+
+@pytest.fixture
+def sample_order(sample_product):
+    return Order(sample_product, 3)
 
 
 @pytest.fixture

@@ -21,6 +21,9 @@ class Category:
         total_quantity = sum(product.quantity for product in self.__products)
         return f"{self.name}, количество продуктов: {total_quantity} шт."
 
+    def __repr__(self):
+        return f"Category(name='{self.name}', products={self.__products})"
+
     def add_product(self, product):
         if not isinstance(product, Product):
             raise TypeError(
@@ -31,17 +34,19 @@ class Category:
 
     @property
     def products(self):
-        return "\n".join(str(product) for product in self.__products)
+        return self.__products
 
     @property
     def product_count(self):
         return len(self.__products)
 
     @property
-    def products_list(self):
-        return self.__products
+    def category_count(self):
+        return Category.number_of_categories
 
-    def print_products(self):
-        """Выводит список продуктов с нумерацией"""
-        for i, product in enumerate(self.__products, 1):
-            print(f"{i}. {product}")
+    # Методы для main.py
+    def get_category_count(self):
+        return self.category_count
+
+    def get_product_count(self):
+        return self.product_count
