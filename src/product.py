@@ -6,6 +6,8 @@ class Product(LogMixin, BaseProduct):
 
     def __init__(self, name, description, price, quantity):
         super().__init__()
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         self.name = name
         self.description = description
         self.__price = price

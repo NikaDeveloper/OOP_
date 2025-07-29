@@ -44,6 +44,13 @@ class Category:
     def category_count(self):
         return Category.number_of_categories
 
+    def average_price(self):
+        try:
+            total_price = sum(product.price for product in self.__products)
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0
+
     # Методы для main.py
     def get_category_count(self):
         return self.category_count
