@@ -1,3 +1,4 @@
+from src.exceptions import ZeroQuantityError
 from src.product import Product
 
 
@@ -25,12 +26,27 @@ class Category:
         return f"Category(name='{self.name}', products={self.__products})"
 
     def add_product(self, product):
-        if not isinstance(product, Product):
-            raise TypeError(
-                "Можно добавлять только объекты Product или его наследников"
-            )
-        self.__products.append(product)
-        Category.number_of_products += 1
+        try:
+            if not isinstance(product, Product):
+                raise TypeError(
+                    "Можно добавлять только объекты Product или его наследников"
+                )
+            if product.quantity == 0:
+                raise ZeroQuantityError()
+
+            self.__products.append(product)
+            Category.number_of_products += 1
+            print(f"Товар {product.name} успешно добавлен")
+            return True
+
+        except ZeroDivisionError as e:
+            print(f"Ошибка: {e}")
+            return False
+        except TypeError as e:
+            print(f"Ошибка: {e}")
+            raise
+        finally:
+            print("обработка добавления товара завершена")
 
     @property
     def products(self):

@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from src.exceptions import ZeroQuantityError
+
 
 class BaseOrder(ABC):
     @abstractmethod
@@ -19,10 +21,20 @@ class BaseOrder(ABC):
 
 class Order(BaseOrder):
     def __init__(self, product, quantity):
-        if quantity < 0:
-            raise ValueError("Количество не может быть отрицательным")
-        self.product = product
-        self.quantity = quantity
+        try:
+            if quantity < 0:
+                raise ValueError("Количество не может быть отрицательным")
+            if quantity == 0:
+                raise ZeroQuantityError()
+
+            self.product = product
+            self.quantity = quantity
+            print(f"Товар {product.name} добавлен в заказ")
+        except (ValueError, ZeroQuantityError) as e:
+            print(f"Ошибка: {e}")
+            raise
+        finally:
+            print("Обработка создания заказа завершена")
 
     @property
     def total_cost(self):

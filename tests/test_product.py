@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
+from src.exceptions import ZeroQuantityError
 from src.lawngrass import LawnGrass
 from src.product import Product
 from src.smartphone import Smartphone
@@ -153,5 +154,14 @@ def test_add_different_classes_raises_error(sample_smartphone, sample_lawngrass)
 
 
 def test_create_product_with_zero_quantity():
-    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+    with pytest.raises(ZeroQuantityError):
         Product(name="Test", description="Test", price=100.0, quantity=0)
+
+
+def test_zero_quantity_error_message():
+    try:
+        Product(name="Test", description="Test", price=100.0, quantity=0)
+    except ZeroQuantityError as e:
+        assert str(e) == "Товар с нулевым количеством не может быть добавлен"
+    else:
+        pytest.fail("ZeroQuantityError не был вызван")

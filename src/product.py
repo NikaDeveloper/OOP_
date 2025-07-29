@@ -1,4 +1,5 @@
 from src.base_product import BaseProduct
+from src.exceptions import ZeroQuantityError
 from src.log_mixin import LogMixin
 
 
@@ -7,7 +8,7 @@ class Product(LogMixin, BaseProduct):
     def __init__(self, name, description, price, quantity):
         super().__init__()
         if quantity == 0:
-            raise ValueError("Товар с нулевым количеством не может быть добавлен")
+            raise ZeroQuantityError()
         self.name = name
         self.description = description
         self.__price = price

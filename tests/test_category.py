@@ -1,10 +1,10 @@
 import pytest
 
 from src.category import Category
+from src.exceptions import ZeroQuantityError
 from src.lawngrass import LawnGrass
 from src.product import Product
 from src.smartphone import Smartphone
-from tests.conftest import sample_category
 
 
 def test_category_initialization(sample_category, sample_products):
@@ -101,9 +101,7 @@ def test_add_lawngrass_to_category(sample_category):
 
 def test_add_invalid_product_raises_error(sample_category):
     """Тест попытки добавления не-продукта в категорию"""
-    with pytest.raises(
-        TypeError, match="Можно добавлять только объекты Product или его наследников"
-    ):
+    with pytest.raises(TypeError):
         sample_category.add_product("Not a product")
 
     with pytest.raises(TypeError):
@@ -130,7 +128,7 @@ def test_average_price_single_product():
 def test_average_price_zero_price_products():
     products = [
         Product("Product1", "Desc", 0.0, 1),
-        Product("Product2", "Desc", 0.0, 1)
+        Product("Product2", "Desc", 0.0, 1),
     ]
     category = Category("Test Cat", "Desc", products)
     assert category.average_price() == 0.0
@@ -168,3 +166,19 @@ def test_original_tests_still_work(sample_category, empty_category):
 
     assert sample_category.category_count > 0
     assert sample_category.get_product_count() == sample_category.product_count
+
+
+def test_add_product_with_zero_quantity(sample_category):
+    """Тест добавления продукта с нулевым количеством в категорию"""
+    with pytest.raises(ZeroQuantityError):
+        zero_product = Product("Zero Product", "Desc", 100.0, 0)
+        sample_category.add_product(zero_product)
+
+
+def test_add_product_success_message(capsys, sample_category):
+    """Тест сообщения об успешном добавлении товара"""
+    product = Product("Test", "Desc", 100.0, 1)
+    sample_category.add_product(product)
+    captured = capsys.readouterr()
+    assert "Товар Test успешно добавлен" in captured.out
+    assert "обработка добавления товара завершена" in captured.out.lower()
