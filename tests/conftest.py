@@ -56,7 +56,7 @@ def sample_product3():
 
 @pytest.fixture
 def empty_product():
-    return Product(name="", description="", price=0.0, quantity=0)
+    return Product(name="", description="", price=0.0, quantity=1)
 
 
 @pytest.fixture

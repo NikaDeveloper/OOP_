@@ -18,7 +18,7 @@ def test_empty_product(empty_product):
     assert empty_product.name == ""
     assert empty_product.description == ""
     assert empty_product.price == 0.0
-    assert empty_product.quantity == 0
+    assert empty_product.quantity == 1
 
 
 def test_product_price_type(sample_product2):
@@ -150,3 +150,8 @@ def test_add_different_classes_raises_error(sample_smartphone, sample_lawngrass)
 
     with pytest.raises(TypeError):
         sample_smartphone + Product("Test", "", 100, 1)
+
+
+def test_create_product_with_zero_quantity():
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product(name="Test", description="Test", price=100.0, quantity=0)

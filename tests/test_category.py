@@ -4,6 +4,7 @@ from src.category import Category
 from src.lawngrass import LawnGrass
 from src.product import Product
 from src.smartphone import Smartphone
+from tests.conftest import sample_category
 
 
 def test_category_initialization(sample_category, sample_products):
@@ -110,3 +111,60 @@ def test_add_invalid_product_raises_error(sample_category):
 
     with pytest.raises(TypeError):
         sample_category.add_product({"name": "Dict", "price": 100})
+
+
+def test_average_price_with_products(sample_category):
+    assert sample_category.average_price() == pytest.approx(140333.33, abs=0.01)
+
+
+def test_average_price_empty_category(empty_category):
+    assert empty_category.average_price() == 0
+
+
+def test_average_price_single_product():
+    product = Product("Test", "Desc", 100.0, 1)
+    category = Category("Test Cat", "Desc", [product])
+    assert category.average_price() == 100.0
+
+
+def test_average_price_zero_price_products():
+    products = [
+        Product("Product1", "Desc", 0.0, 1),
+        Product("Product2", "Desc", 0.0, 1)
+    ]
+    category = Category("Test Cat", "Desc", products)
+    assert category.average_price() == 0.0
+
+
+def test_average_price_after_adding_product(sample_category):
+    initial_avg = sample_category.average_price()
+    new_product = Product("New Product", "Desc", 300000.0, 1)
+    sample_category.add_product(new_product)
+
+    new_avg = sample_category.average_price()
+    assert new_avg == pytest.approx(180250.0, abs=0.01)
+    assert new_avg > initial_avg
+
+
+def test_average_price_after_removing_product(sample_category):
+    initial_avg = sample_category.average_price()
+
+    product_to_remove = sample_category.products[0]
+    sample_category.products.remove(product_to_remove)
+
+    new_avg = sample_category.average_price()
+    assert new_avg != initial_avg
+    assert len(sample_category.products) == 2
+
+
+def test_original_tests_still_work(sample_category, empty_category):
+    assert str(sample_category) == "Смартфоны, количество продуктов: 27 шт."
+    assert str(empty_category) == "Телевизоры, количество продуктов: 0 шт."
+
+    initial_count = sample_category.product_count
+    new_product = Product("New", "Desc", 100.0, 1)
+    sample_category.add_product(new_product)
+    assert sample_category.product_count == initial_count + 1
+
+    assert sample_category.category_count > 0
+    assert sample_category.get_product_count() == sample_category.product_count

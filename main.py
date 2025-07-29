@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     category1 = Category("Смартфоны", "Категория смартфонов", [product1, product2, product3])
 
-    print(category1.middle_price())
+    print(category1.average_price())
 
     category_empty = Category("Пустая категория", "Категория без продуктов", [])
-    print(category_empty.middle_price())
+    print(category_empty.average_price())
