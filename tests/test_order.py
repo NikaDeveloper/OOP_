@@ -1,5 +1,6 @@
 import pytest
 
+from src.exceptions import ZeroQuantityError
 from src.order import Order
 from src.product import Product
 
@@ -29,10 +30,19 @@ def test_order_str_representation(sample_order):
 
 
 def test_order_with_zero_quantity(sample_product):
-    order = Order(sample_product, 0)
-    assert order.total_cost == 0.0
+    """Тест создания заказа с нулевым количеством"""
+    with pytest.raises(ZeroQuantityError):
+        Order(sample_product, 0)
 
 
 def test_order_with_negative_quantity(sample_product):
     with pytest.raises(ValueError, match="Количество не может быть отрицательным"):
         Order(sample_product, -1)
+
+
+def test_order_success_message(capsys, sample_product):
+    """Тест сообщения об успешном создании заказа"""
+    _ = Order(sample_product, 1)
+    captured = capsys.readouterr()
+    assert "Товар Test Product добавлен в заказ" in captured.out
+    assert "Обработка создания заказа завершена" in captured.out
