@@ -4,12 +4,15 @@ from src.utils import load_data_from_json
 
 
 def main():
+    # Загрузка данных из JSON
     categories = load_data_from_json("src/products.json")
 
+    # Вывод информации о категориях и товарах
     for category in categories:
         print(f"\nКатегория: {category.name}")
         print(f"Описание: {category.description}")
         print(f"Количество товаров: {len(category.products)}")
+        print(f"Средняя цена: {category.average_price():.2f} руб.")
         print("Товары:")
         for product in category.products:
             print(
@@ -18,50 +21,22 @@ def main():
 
 
 if __name__ == "__main__":
+    # Проверка создания продукта с нулевым количеством (должно прервать программу)
+    product_invalid = Product("Бракованный товар", "Неверное количество", 1000.0, 0)
+
+    # Этот код не выполнится, если выше возникла ошибка
     product1 = Product(
         "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5
     )
     product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
     product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
 
-    print(product1.name)
-    print(product1.description)
-    print(product1.price)
-    print(product1.quantity)
-
-    print(product2.name)
-    print(product2.description)
-    print(product2.price)
-    print(product2.quantity)
-
-    print(product3.name)
-    print(product3.description)
-    print(product3.price)
-    print(product3.quantity)
-
     category1 = Category(
-        "Смартфоны",
-        "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
-        [product1, product2, product3],
+        "Смартфоны", "Категория смартфонов", [product1, product2, product3]
     )
+    print(category1.average_price())
 
-    print(category1.name == "Смартфоны")
-    print(category1.description)
-    print(len(category1.products))
-    print(category1.get_category_count())  # Используем метод вместо property
-    print(category1.get_product_count())  # Используем метод вместо property
+    category_empty = Category("Пустая категория", "Категория без продуктов", [])
+    print(category_empty.average_price())
 
-    product4 = Product('55" QLED 4K', "Фоновая подсветка", 123000.0, 7)
-    category2 = Category(
-        "Телевизоры",
-        "Современный телевизор, который позволяет наслаждаться просмотром, станет вашим другом и помощником",
-        [product4],
-    )
-
-    print(category2.name)
-    print(category2.description)
-    print(len(category2.products))
-    print(category2.products)
-
-    print(Category.number_of_categories)  # Прямой доступ к атрибуту класса
-    print(Category.number_of_products)  # Прямой доступ к атрибуту класса
+    main()
